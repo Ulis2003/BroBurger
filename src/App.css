@@ -1,0 +1,406 @@
+#root {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left; 
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background-color: #fdfaf6;
+  color: #333;
+}
+
+.app-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.header {
+  background-color: #e63946;
+  padding: 20px 4%; 
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 100%;
+}
+
+.header-content {
+  width: 100%;
+  max-width: 1000px; /* Controla qué tan separados se van los elementos internamente */
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.logo {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.slogan {
+  margin: 5px 0 0 0;
+  font-style: italic;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.cart-badge {
+  background-color: #1d3557;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: bold;
+  display: flex;
+  gap: 15px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* --- HERO BANNER (De borde a borde) --- */
+.hero {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url('https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1200&q=80');
+  background-size: cover;
+  background-position: center;
+  height: 340px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+}
+
+.hero-text h2 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.hero-text p {
+  font-size: 1.2rem;
+  font-weight: 300;
+}
+
+
+.main-container {
+  width: 100%;
+  max-width: 1350px; 
+  margin: 50px auto;
+  padding: 0 4%;
+  flex-grow: 1;
+}
+
+.menu-title {
+  text-align: center;
+  color: #1d3557;
+  margin-bottom: 40px;
+  font-size: 2.2rem;
+  font-weight: 700;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+}
+
+/* --- TARJETAS --- */
+.burger-card {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+  border: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.burger-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+}
+
+.burger-info {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+  min-height: 220px;
+}
+
+.burger-name {
+  color: #e63946;
+  margin-top: 0;
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+.burger-description {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+.burger-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.burger-price {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #1d3557;
+}
+
+/* --- BOTÓN --- */
+.btn-order {
+  background-color: #e63946;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-order:hover {
+  background-color: #cb2d3a;
+}
+
+.btn-order:active {
+  transform: scale(0.96);
+}
+
+/* --- FOOTER --- */
+.footer {
+  text-align: center;
+  padding: 25px;
+  background-color: #1d3557;
+  color: white;
+  width: 100%;
+  margin-top: auto; /* Hace que el footer se quede abajo si hay poco contenido */
+}
+
+
+/* --- ESTILOS DE LA VENTANA MODAL (CARRITO) --- */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* El cuadro blanco del contenedor del carrito */
+.modal-content {
+  background-color: white;
+  width: 90%;
+  max-width: 550px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+  animation: slideUp 0.3s ease-out;
+}
+
+.modal-header {
+  padding: 20px 25px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  color: #1d3557;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #888;
+  transition: color 0.2s;
+  line-height: 1;
+}
+
+.btn-close:hover {
+  color: #e63946;
+}
+
+.modal-body {
+  padding: 25px;
+  overflow-y: auto; /* Permite scroll si hay muchas hamburguesas */
+}
+
+.empty-cart-message {
+  text-align: center;
+  color: #777;
+  font-style: italic;
+  padding: 20px 0;
+}
+
+/* Cada fila de producto en el carrito */
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+.cart-item-details h4 {
+  color: #333;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.cart-item-details p {
+  color: #e63946;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+/* Botones de acción (+, -, eliminar) */
+.cart-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-action-minus, .btn-action-plus {
+  background-color: #f0f0f0;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.btn-action-minus:hover, .btn-action-plus:hover {
+  background-color: #e0e0e0;
+}
+
+.item-qty {
+  font-weight: bold;
+  font-size: 1.1rem;
+  min-width: 20px;
+  text-align: center;
+}
+
+.btn-action-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 5px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.btn-action-delete:hover {
+  background-color: #ffe3e5;
+}
+
+/* Sección inferior del modal */
+.modal-footer {
+  padding: 20px 25px;
+  border-top: 1px solid #eee;
+  background-color: #fafafa;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+
+.modal-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.modal-total strong {
+  color: #1d3557;
+  font-size: 1.5rem;
+}
+
+.btn-checkout {
+  width: 100%;
+  background-color: #1d3557;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-checkout:hover {
+  background-color: #132237;
+}
+
+/* Efecto visual de cursor apuntador en el badge del carrito */
+.cart-badge {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.cart-badge:hover {
+  transform: scale(1.04);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

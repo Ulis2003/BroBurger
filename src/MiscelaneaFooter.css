@@ -1,0 +1,189 @@
+/* Estilos profesionales para MiscelaneaFooter */
+.bro-footer {
+  background-color: #0d1b2a; /* Azul marino premium corporativo */
+  color: #ffffff;
+  padding: 50px 30px 25px 30px;
+  margin-top: 50px;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  border-top: 5px solid #d32f2f; /* Línea superior roja */
+}
+
+.bro-footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: space-between;
+}
+
+.bro-footer-section {
+  flex: 1;
+  min-width: 250px;
+}
+
+.bro-footer-section h3 {
+  color: #d32f2f;
+  font-size: 1.2rem;
+  margin-top: 0;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: bold;
+}
+
+.bro-footer-section p {
+  color: #e0e1dd;
+  line-height: 1.6;
+  font-size: 14.5px;
+  margin: 0;
+  text-align: justify;
+}
+
+/* Enlaces de Redes Sociales */
+.bro-social-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bro-social-btn {
+  color: #e0e1dd !important;
+  text-decoration: none;
+  font-size: 14.5px;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+  width: fit-content;
+}
+
+
+.bro-social-btn:hover {
+  color: #d32f2f !important;
+  transform: translateX(5px);
+}
+/* Estilos del Footer */
+.bro-footer {
+  background-color: #0d1b2a; 
+  color: #ffffff;
+  padding: 50px 30px 25px 30px;
+  margin-top: 50px;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  border-top: 5px solid #d32f2f;
+}
+
+.bro-footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: space-between;
+}
+
+.bro-footer-section {
+  flex: 1;
+  min-width: 260px;
+}
+
+.bro-footer-section h3 {
+  color: #d32f2f;
+  font-size: 1.2rem;
+  margin-top: 0;
+  margin-bottom: 18px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: bold;
+}
+
+.bro-footer-section p {
+  color: #e0e1dd;
+  line-height: 1.6;
+  font-size: 14px;
+  margin: 0;
+}
+
+
+.bro-social-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bro-social-btn {
+  color: #ffffff !important;
+  text-decoration: none;
+  font-size: 14px;
+  background-color: #d32f2f;
+  padding: 8px 15px;
+  border-radius: 4px;
+  width: 160px;
+  text-align: center;
+  font-weight: bold;
+  display: inline-block;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.bro-social-btn:hover {
+  background-color: #b71c1c;
+  transform: translateY(-2px);
+}
+
+/* Lista de contacto */
+.bro-contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.bro-contact-list li {
+  margin-bottom: 8px;
+  color: #cbd5e1;
+  font-size: 13.5px;
+}
+
+/* Panel Digital (Reloj y Calendario) */
+.bro-live-widget {
+  background-color: #1b263b; 
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-left: 4px solid #28a745; 
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.bro-live-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bro-live-icon {
+  font-size: 20px;
+}
+
+.bro-live-text small {
+  display: block;
+  font-size: 11px;
+  color: #778da9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bro-clock-digital {
+  font-family: 'Courier New', Courier, monospace; 
+  color: #39ff14 !important; 
+  font-size: 16px !important;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.bro-footer-bottom {
+  border-top: 1px solid #1b263b;
+  text-align: center;
+  padding-top: 15px;
+  margin-top: 35px;
+  font-size: 13px;
+  color: #778da9;
+}
