@@ -7,6 +7,7 @@ const INITIAL_MENU = [
   {
     id: 1,
     nombre: "Bro Clásica",
+    categoria: "Bro Clásica",
     descripcion: "Carne de res premium, queso cheddar, lechuga, tomate y la salsa secreta Bro.",
     precio: 8.50,
     imagen: "bro_clasica.png"
@@ -14,6 +15,7 @@ const INITIAL_MENU = [
   {
     id: 2,
     nombre: "Mega Bacon Bro",
+    categoria: "Bro Clásica",
     descripcion: "Doble carne, doble queso cheddar, tiras de tocino crocante y salsa BBQ.",
     precio: 11.00,
     imagen: "mega_bacon.png"
@@ -21,9 +23,98 @@ const INITIAL_MENU = [
   {
     id: 3,
     nombre: "Bro Crispy Chicken",
+    categoria: "Bro Clásica",
     descripcion: "Pollo crujiente, ensalada col, pepinillos y mayonesa ahumada.",
     precio: 9.50,
     imagen: "crispy_chicken.png"
+  },
+  {
+    id: 4,
+    nombre: "Bro Combo Clásico",
+    categoria: "Bro Combo",
+    descripcion: "Bro Clásica + Papas fritas medianas + Bebida personal.",
+    precio: 14.50,
+    imagen: "combo_clasico.png"
+  },
+  {
+    id: 5,
+    nombre: "Bro Combo Mega Bacon",
+    categoria: "Bro Combo",
+    descripcion: "Mega Bacon Bro + Papas fritas grandes + Bebida personal.",
+    precio: 17.00,
+    imagen: "combo_mega_bacon.png"
+  },
+  {
+  id: 6,
+  nombre: "Papas Fritas Medianas",
+  categoria: "Papas",
+  descripcion: "Papas fritas doradas y crujientes.",
+  precio: 5.50,
+  imagen: "papas_medianas.png"
+  },
+  {
+  id: 7,
+  nombre: "Papas Fritas Grandes",
+  categoria: "Papas",
+  descripcion: "Porción grande de papas fritas.",
+  precio: 7.50,
+  imagen: "papas_grandes.png"
+  },
+  {
+  id: 8,
+  nombre: "Papas con Queso",
+  categoria: "Papas",
+  descripcion: "Papas fritas cubiertas con salsa de queso cheddar.",
+  precio: 8.50,
+  imagen: "papas_queso.png"
+  },
+  {
+  id: 9,
+  nombre: "Gaseosa Personal",
+  categoria: "Bebidas",
+  descripcion: "Bebida gaseosa de 500ml.",
+  precio: 3.50,
+  imagen: "gaseosa_personal.png"
+  },
+  {
+  id: 10,
+  nombre: "Gaseosa Familiar",
+  categoria: "Bebidas",
+  descripcion: "Bebida gaseosa de 1.5L.",
+  precio: 7.50,
+  imagen: "gaseosa_familiar.png"
+  },
+  {
+  id: 11,
+  nombre: "Limonada Frozen",
+  categoria: "Bebidas",
+  descripcion: "Limonada helada preparada al momento.",
+  precio: 6.00,
+  imagen: "limonada_frozen.png"
+  },
+  {
+  id: 12,
+  nombre: "Milkshake de Vainilla",
+  categoria: "Bebidas",
+  descripcion: "Batido cremoso de vainilla.",
+  precio: 9.00,
+  imagen: "milkshake_vainilla.png"
+  },
+  {
+  id: 13,
+  nombre: "Brownie con Helado",
+  categoria: "Postres",
+  descripcion: "Brownie tibio acompañado de helado de vainilla.",
+  precio: 10.50,
+  imagen: "brownie_helado.png"
+  },
+  {
+  id: 14,
+  nombre: "Pie de Manzana",
+  categoria: "Postres",
+  descripcion: "Porción de pie de manzana artesanal.",
+  precio: 7.50,
+  imagen: "pie_manzana.png"
   }
 ];
 
@@ -32,6 +123,7 @@ function App() {
   const [menu, setMenu] = useState(INITIAL_MENU);
   const [carrito, setCarrito] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('Todos');
 
 
   // Estados exclusivos del Panel de Administración
@@ -106,6 +198,11 @@ function App() {
       producto.id === id ? { ...producto, [campo]: nuevoValor } : producto
     ));
   };
+
+  // Filtrado de productos para la vista de cliente
+  const productosFiltrados = categoriaSeleccionada === 'Todos'
+    ? menu
+    : menu.filter(producto => producto.categoria === categoriaSeleccionada);
 
   return (
     <div className="app-container">
@@ -270,12 +367,25 @@ function App() {
             </div>
           </section>
 
+          {/*Filtro de Categorías */}
+          <div className="filter-container">
+            {['Todos', 'Bro Clásica', 'Bro Combo', 'Papas', 'Bebidas', 'Postres'].map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setCategoriaSeleccionada(cat)}
+                className={`btn-filter ${categoriaSeleccionada === cat ? 'active' : ''}`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
           {/* Sección del Menú */}
           <main className="main-container">
             <h2 className="menu-title">Nuestro Menú Premium</h2>
             
             <div className="menu-grid">
-              {menu.map((hamburguesa) => (
+              {productosFiltrados.map((hamburguesa) => (
                 <div key={hamburguesa.id} className="burger-card">
                   <div className="burger-info">
                     <div>
@@ -321,6 +431,7 @@ function App() {
                         <h4>{item.nombre}</h4>
                         <p>S/ {item.precio.toFixed(2)}</p>
                       </div>
+                      
                       
                       <div className="cart-item-actions">
                         <button className="btn-action-minus" onClick={() => restarDelPedido(item.id)}>-</button>

@@ -404,3 +404,35 @@ body {
   from { transform: translateY(30px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+
+/* --- Filtros de Categorías --- */
+.filter-container {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 25px 0 10px 0;
+}
+
+.btn-filter {
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  color: #444;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-filter:hover {
+  background-color: #e5e5e5;
+}
+
+.btn-filter.active {
+  background-color: #d32f2f;
+  color: white;
+  border-color: #d32f2f;
+  box-shadow: 0 2px 6px rgba(211, 47, 47, 0.3);
+}
