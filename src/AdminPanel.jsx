@@ -1,35 +1,27 @@
 import { useState } from 'react';
 
-export default function AdminPanel() {
+export default function AdminPanel({ pedidos, setPedidos, menu, setMenu }) {
   // Estado para alternar entre las dos pestañas de administración
   const [vistaActual, setVistaActual] = useState('pedidos'); // 'pedidos' o 'menu'
 
-  // ==========================================
-  // 1. INTERFAZ: PEDIDOS ACTIVOS
-  // ==========================================
-  // Simulamos nuestro "ArrayList" de pedidos
-  const [pedidos, setPedidos] = useState([
-    { id: 101, cliente: 'Bruce', orden: '1x Bro Clásica, 1x Gaseosa', estado: 'En proceso' },
-    { id: 102, cliente: 'Mateo', orden: '2x Mega Bacon Bro', estado: 'En proceso' }
-  ]);
+  // Lógica de estados y función para avanzar al siguiente estado
+  const estadosOrden = ['Pedido Recibido','En Preparacion','Esperando al Repartidor','En camino','Finalizado'];
 
-  // Función para cambiar el estado (lo sacamos de la lista al completarlo)
+  const nextEstado = (current) => {
+    const idx = estadosOrden.indexOf(current);
+    if (idx === -1) return estadosOrden[0];
+    return idx === estadosOrden.length - 1 ? estadosOrden[idx] : estadosOrden[idx + 1];
+  };
+
   const marcarComoListo = (idPedido) => {
-    const pedidosActualizados = pedidos.filter(pedido => pedido.id !== idPedido);
-    setPedidos(pedidosActualizados);
+    const current = pedidos.find(p => p.id === idPedido);
+    const next = nextEstado(current ? current.estado : undefined);
+    setPedidos(prev => prev.map(p => p.id === idPedido ? { ...p, estado: next } : p));
+    console.log('AdminPanel.jsx -> marcarComoListo:', { idPedido, next });
   };
 
   // ==========================================
-  // 2. INTERFAZ: MODIFICAR MENÚ
-  // ==========================================
-  // Simulamos nuestro "ArrayList" del menú
-  const [menu, setMenu] = useState([
-    { id: 1, nombre: 'Bro Clásica', precio: 8.50, descripcion: 'Carne de res premium, queso cheddar...', imagen: 'burger1.jpg' },
-    { id: 2, nombre: 'Mega Bacon Bro', precio: 11.00, descripcion: 'Doble carne, doble queso cheddar...', imagen: 'burger2.jpg' },
-    { id: 3, nombre: 'Bro Crispy Chicken', precio: 9.50, descripcion: 'Pollo crujiente, ensalada col...', imagen: 'burger3.jpg' }
-  ]);
-
-  // Función para modificar cualquier campo de un producto
+  // 2. INTERFAZ: MODIFICAR MENÚ (usa `menu` y `setMenu` pasados desde App)
   const modificarProducto = (id, campo, nuevoValor) => {
     const menuActualizado = menu.map(producto => {
       if (producto.id === id) {
@@ -37,96 +29,117 @@ export default function AdminPanel() {
       }
       return producto;
     });
-    setMenu(menuActualizado);
+    if (setMenu) setMenu(menuActualizado);
   };
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto', fontFamily: 'sans-serif' }}>
-      <h2 style={{ color: '#d32f2f' }}>⚙️ Panel de Administración</h2>
+    <div className="admin-panel">
+      <h2 className="admin-title">⚙️ Panel de Administración</h2>
       
-      {/* Botones de navegación */}
-      <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
+      <div className="admin-nav">
         <button 
           onClick={() => setVistaActual('pedidos')}
-          style={{ padding: '10px', backgroundColor: vistaActual === 'pedidos' ? '#333' : '#ddd', color: vistaActual === 'pedidos' ? '#fff' : '#000', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+          className={`admin-tab ${vistaActual === 'pedidos' ? 'active' : ''}`}
         >
           Pedidos Activos
         </button>
         <button 
           onClick={() => setVistaActual('menu')}
-          style={{ padding: '10px', backgroundColor: vistaActual === 'menu' ? '#333' : '#ddd', color: vistaActual === 'menu' ? '#fff' : '#000', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+          className={`admin-tab ${vistaActual === 'menu' ? 'active' : ''}`}
         >
           Modificar Menú
         </button>
       </div>
 
-      {/* RENDERIZADO CONDICIONAL DE VISTAS */}
-      {vistaActual === 'pedidos' ? (
-        // --- VISTA DE PEDIDOS ---
-        <div>
-          <h3>🕒 Pedidos en Proceso</h3>
-          {pedidos.length === 0 ? (
-            <p>No hay pedidos pendientes. ¡Buen trabajo!</p>
-          ) : (
-            pedidos.map(pedido => (
-              <div key={pedido.id} style={{ border: '1px solid #ccc', padding: '15px', marginBottom: '10px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <strong>Pedido #{pedido.id} - {pedido.cliente}</strong>
-                  <p style={{ margin: '5px 0 0 0' }}>{pedido.orden}</p>
+      <div className="admin-section">
+        {vistaActual === 'pedidos' ? (
+          <>
+            <h3 className="admin-section-title">🕒 Pedidos en Proceso</h3>
+            {pedidos.length === 0 ? (
+              <p className="admin-empty">No hay pedidos pendientes. ¡Buen trabajo!</p>
+            ) : (
+              [...pedidos].reverse().map(pedido => {
+                const isFinal = pedido.estado === estadosOrden[estadosOrden.length - 1];
+                const nextLabel = nextEstado(pedido.estado);
+                return (
+                  <div key={pedido.id} className="admin-order-card">
+                    <div className="admin-order-info">
+                      <strong className="admin-order-client">Pedido #{pedido.id}</strong>
+                      <p className="admin-order-text">{pedido.orden}</p>
+                      <p className="admin-order-status">Estado: {pedido.estado}</p>
+                      {/*Info Cliente*/}
+                      <p className="admin-order-client-info">
+                        <strong>Nombre:</strong> {pedido.cliente || pedido.nombre}<br />
+                        <strong>DNI:</strong> {pedido.dni}<br />
+                        <strong>Teléfono:</strong> {pedido.numero}<br />
+                        <strong>Dirección:</strong> {pedido.direccion}<br />
+                        <strong>Anotaciones:</strong> {pedido.indicaciones || pedido.Indicaciones}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => { if (!isFinal) marcarComoListo(pedido.id); }}
+                      className={`admin-button ${isFinal ? 'admin-button-disabled' : 'admin-button-primary'}`}
+                      disabled={isFinal}
+                      title={isFinal ? 'Pedido finalizado' : `Avanzar a: ${nextLabel}`}
+                    >
+                      {isFinal ? 'Finalizado' : `Avanzar ➜ ${nextLabel}`}
+                    </button>
+                  </div>
+                );
+              })
+            )}
+          </>
+        ) : (
+          <>
+            <h3 className="admin-section-title">🍔 Editar Productos</h3>
+            <div className="admin-products">
+              {menu.map(producto => (
+                <div key={producto.id} className="admin-product-card">
+                  <div className="admin-form-group">
+                    <label>Nombre:</label>
+                    <input 
+                      className="admin-input"
+                      type="text" 
+                      value={producto.nombre} 
+                      onChange={(e) => modificarProducto(producto.id, 'nombre', e.target.value)} 
+                    />
+                  </div>
+
+                  <div className="admin-form-group">
+                    <label>Precio (S/):</label>
+                    <input 
+                      className="admin-input"
+                      type="number" 
+                      step="0.10"
+                      value={producto.precio} 
+                      onChange={(e) => modificarProducto(producto.id, 'precio', parseFloat(e.target.value))} 
+                    />
+                  </div>
+
+                  <div className="admin-form-group">
+                    <label>Descripción:</label>
+                    <textarea 
+                      className="admin-textarea"
+                      value={producto.descripcion} 
+                      onChange={(e) => modificarProducto(producto.id, 'descripcion', e.target.value)} 
+                    />
+                  </div>
+
+                  <div className="admin-form-group">
+                    <label>Ruta de Imagen:</label>
+                    <input 
+                      className="admin-input"
+                      type="text" 
+                      value={producto.imagen} 
+                      onChange={(e) => modificarProducto(producto.id, 'imagen', e.target.value)} 
+                    />
+                  </div>
                 </div>
-                <button 
-                  onClick={() => marcarComoListo(pedido.id)}
-                  style={{ backgroundColor: '#28a745', color: 'white', border: 'none', padding: '10px 15px', borderRadius: '5px', cursor: 'pointer' }}
-                >
-                  Marcar Listo ✓
-                </button>
-              </div>
-            ))
-          )}
-        </div>
-      ) : (
-        // --- VISTA DE MODIFICAR MENÚ ---
-        <div>
-          <h3>🍔 Editar Productos</h3>
-          {menu.map(producto => (
-            <div key={producto.id} style={{ border: '1px solid #ddd', padding: '15px', marginBottom: '15px', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              
-              <label>Nombre:</label>
-              <input 
-                type="text" 
-                value={producto.nombre} 
-                onChange={(e) => modificarProducto(producto.id, 'nombre', e.target.value)} 
-                style={{ padding: '8px' }}
-              />
-
-              <label>Precio (S/):</label>
-              <input 
-                type="number" 
-                step="0.10"
-                value={producto.precio} 
-                onChange={(e) => modificarProducto(producto.id, 'precio', parseFloat(e.target.value))} 
-                style={{ padding: '8px' }}
-              />
-
-              <label>Descripción:</label>
-              <textarea 
-                value={producto.descripcion} 
-                onChange={(e) => modificarProducto(producto.id, 'descripcion', e.target.value)} 
-                style={{ padding: '8px', minHeight: '60px' }}
-              />
-
-              <label>Ruta de Imagen:</label>
-              <input 
-                type="text" 
-                value={producto.imagen} 
-                onChange={(e) => modificarProducto(producto.id, 'imagen', e.target.value)} 
-                style={{ padding: '8px' }}
-              />
-              
+              ))}
             </div>
-          ))}
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

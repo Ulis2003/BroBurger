@@ -1,14 +1,42 @@
-
 import './App.css';
-import './Pago.css'
+import './Pago.css';
+import './MiscelaneaFooter.css'; 
+import MiscelaneaFooter from './MiscelaneaFooter';
+import React, { useState } from 'react';
 
-function Pago( {carrito, volverMenu} ) {
+function Pago( {carrito, volverMenu, onConfirmarPedido} ) {
+
+    //Datos de Contacto
+const [NombreApellido, setNombreApellido] = useState("");
+const [Numero, setNumero] = useState("");
+const [Dni, setDni] = useState("");
+const [Direccion, setDireccion] = useState("");
+const [Indicaciones, setIndicaciones] = useState("");
 
 
 
 const totalPagar = carrito.reduce(
     (acc, item) => acc + (item.precio * item.cantidad),
     0);
+
+    const handleSubmit = (event) => {
+        //Evita que el formulario se recargue al enviar
+        event.preventDefault();
+
+        // Crea un objeto con la información del cliente
+        const ClienteInfo = {
+            NombreApellido,
+            Numero,
+            Dni,
+            Direccion,
+            Indicaciones
+        };
+
+        // Llama a la función de confirmación de pedido pasada desde App.jsx
+        if (onConfirmarPedido) {
+            onConfirmarPedido(ClienteInfo);
+        }
+    };
 
     return (
         <div className="app-container">
@@ -50,7 +78,7 @@ const totalPagar = carrito.reduce(
 
                 <div className="detalle-indicaciones">
                     <label>Indicaciones Adicionales</label>
-                    <input name="indicaciones" type="text-box"></input>
+                    <input name="indicaciones" value={Indicaciones} onChange={(e) => setIndicaciones(e.target.value)} type="text-box"></input>
                 </div>
 
                 <div className="total-pedido">
@@ -60,23 +88,23 @@ const totalPagar = carrito.reduce(
                 </section>
 
 
-                <form className="form-control">
+                <form className="form-control" onSubmit={handleSubmit}>
                     <h4>Datos de Contacto:</h4>
                     <div className="form-container">
                         <label>Nombre y Apellido: </label>
-                        <input name="NombreApellido" type='text' required/>
+                        <input name="NombreApellido" type='text' value={NombreApellido} onChange={(e) => setNombreApellido(e.target.value)} required/>
                     </div>
                     <div className="form-container">
                         <label>Numero de DNI: </label>
-                        <input name="Dni" type='text' required/>
+                        <input name="Dni" type='text' value={Dni} onChange={(e) => setDni(e.target.value)} required/>
                     </div>
                     <div className="form-container">
                         <label>Numero de Contacto: </label>
-                        <input name="Numero" type='text' required/>
+                        <input name="Numero" type='text' value={Numero} onChange={(e) => setNumero(e.target.value)} required/>
                     </div>
                     <div className="form-container">
                         <label>Direccion:</label>
-                        <input name="Direccion" type='text' required/>
+                        <input name="Direccion" type='text' value={Direccion} onChange={(e) => setDireccion(e.target.value)} required/>
                     </div>
                     <hr />
                     <h4>Datos de Pago</h4>
@@ -94,13 +122,13 @@ const totalPagar = carrito.reduce(
                     </div>
                     
 
-                    <button className="button-finally">Confirmar Pedido</button>
+                    <button type="submit" className="button-finally">Confirmar Pedido</button>
                 </form>
 
             </main>
 
-            <footer className="footer">
-                <p>© 2026 BroBurger - Todos los derechos reservados.</p>
+            <footer className="footer-container">
+                <MiscelaneaFooter />
             </footer>
 
         </div>

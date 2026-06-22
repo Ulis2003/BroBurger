@@ -405,6 +405,174 @@ body {
   to { transform: translateY(0); opacity: 1; }
 }
 
+/* --- ADMIN PANEL --- */
+.admin-panel {
+  padding: 2rem;
+  max-width: 1400px;
+  width: min(100%, 1400px);
+  margin: 0 auto;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+}
+
+.admin-title {
+  color: #d32f2f;
+  margin-bottom: 1.2rem;
+  font-size: 2rem;
+}
+
+.admin-nav {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.admin-tab {
+  padding: 12px 20px;
+  border: 1px solid #ddd;
+  background-color: #f8f8f8;
+  color: #333;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.admin-tab.active {
+  background-color: #333;
+  color: white;
+  border-color: #333;
+}
+
+.admin-section {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  width: 100%;
+}
+
+.admin-section-title {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #1d3557;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.admin-empty {
+  color: #666;
+  font-style: italic;
+}
+
+.admin-order-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #e8e8e8;
+  border-radius: 16px;
+  padding: 22px 24px;
+  margin-bottom: 18px;
+  background-color: #fafafa;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.admin-order-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.admin-order-client {
+  font-size: 1rem;
+  color: #d32f2f;
+}
+
+.admin-order-text,
+.admin-order-status {
+  margin: 0;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.admin-button {
+  border: none;
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-weight: 700;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.admin-button-primary {
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+}
+
+.admin-button-primary:hover {
+  transform: translateY(-1px);
+  background-color: #218838;
+}
+
+.admin-button-disabled {
+  background-color: #6c757d;
+  color: white;
+  cursor: default;
+}
+
+.admin-products {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-product-card {
+  border: 1px solid #e8e8e8;
+  border-radius: 16px;
+  background-color: #fafafa;
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  max-width: 100%;
+  padding: 28px;
+  min-width: 0;
+}
+
+@media (max-width: 950px) {
+  .admin-products {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-input,
+.admin-textarea {
+  padding: 12px 14px;
+  border: 1px solid #dcdcdc;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-input:focus,
+.admin-textarea:focus {
+  border-color: #e63946;
+  box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.12);
+}
+
+.admin-textarea {
+  min-height: 90px;
+  resize: vertical;
+}
 
 /* --- Filtros de Categorías --- */
 .filter-container {

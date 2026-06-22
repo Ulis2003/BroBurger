@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import './App.css';
 import MiscelaneaFooter from './MiscelaneaFooter';
 import Pago from './Pago';
+import Seguimiento from './Seguimiento';
+import AdminPanel from './AdminPanel';
 
 const INITIAL_MENU = [
   {
@@ -124,19 +126,19 @@ function App() {
   const [carrito, setCarrito] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('Todos');
+  const [pedidoConfirmado, setPedidoConfirmado] = useState(null);
 
 
   // Estados exclusivos del Panel de Administración
   const [esAdmin, setEsAdmin] = useState(false);
   const [vistaAdmin, setVistaAdmin] = useState('pedidos'); // 'pedidos' o 'menu'
   const [pedidos, setPedidos] = useState([
-    { id: 1, cliente: "Cliente #241", orden: "1x Mega Bacon Bro, 1x Bro Clásica", total: 19.50 }
+    { id: 1, cliente: "Cliente #241", orden: "1x Mega Bacon Bro, 1x Bro Clásica", total: 19.50, estado: "En Preparacion"
+      , nombre: "Juan Pérez", numero: "987654321", dni: "12345678", direccion: "Calle Principal 123", Indicaciones: "Dejar en la puerta, por favor." },
   ]);
 
   /**/
-  const [pantalla, setPantalla] = useState("App");
-  if(pantalla === "Pago") return <Pago carrito={carrito} volverMenu={()=> {setPantalla("App")}}/>;
-  /**/
+    const [pantalla, setPantalla] = useState("App");
 
   // --- FUNCIONES DEL CARRITO ---
   const agregarAlPedido = (producto) => {
@@ -172,25 +174,44 @@ function App() {
   const totalPagar = carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
 
   // --- FUNCIÓN PARA PROCESAR COMPRA (Envía al admin) ---
-  const gestionarConfirmacionCompra = () => {
+  const gestionarConfirmacionCompra = (ClienteInfo) => {
     if (carrito.length === 0) return;
 
     const nuevoPedido = {
       id: pedidos.length + 1,
-      cliente: `Cliente #${Math.floor(100 + Math.random() * 900)}`,
+      cliente: ClienteInfo.NombreApellido,
+      numero: ClienteInfo.Numero,
+      dni: ClienteInfo.Dni,
+      direccion: ClienteInfo.Direccion,
+      indicaciones: ClienteInfo.Indicaciones,
       orden: carrito.map(item => `${item.cantidad}x ${item.nombre}`).join(', '),
-      total: totalPagar
+      total: totalPagar,
+      estado: 'Pedido Recibido'
     };
 
     setPedidos([...pedidos, nuevoPedido]);
     setCarrito([]);
     setIsModalOpen(false);
-    alert("¡Tu pedido ha sido enviado a la cocina con éxito!");
+    setPedidoConfirmado(nuevoPedido);
+    setPantalla('Seguimiento');
+    alert("¡Tu pedido ha sido enviado a  la cocina con éxito!");
   };
 
   // --- FUNCIONES DE ADMINISTRACIÓN ---
+  const estadosOrden = ['Pedido Recibido','En Preparacion','Esperando al Repartidor','En camino','Finalizado'];
+
+  const nextEstado = (current) => {
+    const idx = estadosOrden.indexOf(current);
+    if (idx === -1) return estadosOrden[0];
+    return idx === estadosOrden.length - 1 ? estadosOrden[idx] : estadosOrden[idx + 1];
+  };
+
   const cambiarEstadoPedido = (idPedido) => {
-    setPedidos(pedidos.filter(pedido => pedido.id !== idPedido));
+    const current = pedidos.find(p => p.id === idPedido);
+    const next = nextEstado(current ? current.estado : undefined);
+    setPedidos(prev => prev.map(p => p.id === idPedido ? { ...p, estado: next } : p));
+    setPedidoConfirmado(prev => (prev && prev.id === idPedido) ? { ...prev, estado: nextEstado(prev.estado) } : prev);
+    console.log('App.jsx -> cambiarEstadoPedido:', { idPedido, next });
   };
 
   const actualizarItemMenu = (id, campo, nuevoValor) => {
@@ -203,6 +224,14 @@ function App() {
   const productosFiltrados = categoriaSeleccionada === 'Todos'
     ? menu
     : menu.filter(producto => producto.categoria === categoriaSeleccionada);
+
+  if (pantalla === "Pago") {
+    return <Pago carrito={carrito} volverMenu={() => setPantalla("App")} onConfirmarPedido={gestionarConfirmacionCompra} />;
+  }
+
+  if (pantalla === "Seguimiento") {
+    return <Seguimiento pedido={pedidoConfirmado} volverMenu={() => setPantalla("App")} />;
+  }
 
   return (
     <div className="app-container">
@@ -245,117 +274,7 @@ function App() {
 
       {/* RENDERIZADO CONDICIONAL: VISTA ADMIN vs VISTA TIENDA */}
       {esAdmin ? (
-        /* ================= VISTA ADMINISTRADOR ================= */
-        <main className="main-container" style={{ padding: '20px' }}>
-          <h2 className="menu-title">⚙️ Panel de Administración</h2>
-          
-          {/* Navegación interna de Admin */}
-          <div style={{ marginBottom: '25px', display: 'flex', gap: '10px', justifyContent: 'center' }}>
-            <button 
-              onClick={() => setVistaAdmin('pedidos')}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: vistaAdmin === 'pedidos' ? '#333' : '#eee',
-                color: vistaAdmin === 'pedidos' ? '#fff' : '#000',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                fontWeight: 'bold'
-              }}
-            >
-              Pedidos Activos ({pedidos.length})
-            </button>
-            <button 
-              onClick={() => setVistaAdmin('menu')}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: vistaAdmin === 'menu' ? '#333' : '#eee',
-                color: vistaAdmin === 'menu' ? '#fff' : '#000',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                fontWeight: 'bold'
-              }}
-            >
-              Modificar Menú
-            </button>
-          </div>
-
-          {/* Subvistas de Administración */}
-          {vistaAdmin === 'pedidos' ? (
-            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-              <h3>🕒 Pedidos en preparación (Cambiar estado)</h3>
-              {pedidos.length === 0 ? (
-                <p style={{ textAlign: 'center', marginTop: '20px', color: '#666' }}>No hay pedidos en proceso por el momento.</p>
-              ) : (
-                pedidos.map(pedido => (
-                  <div key={pedido.id} style={{ border: '1px solid #ddd', padding: '15px', marginBottom: '10px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                    <div>
-                      <strong style={{ color: '#d32f2f' }}>{pedido.cliente}</strong>
-                      <p style={{ margin: '5px 0', fontSize: '14px' }}>{pedido.orden}</p>
-                      <small style={{ fontWeight: 'bold', color: '#333' }}>Total: S/ {pedido.total.toFixed(2)}</small>
-                    </div>
-                    <button 
-                      onClick={() => cambiarEstadoPedido(pedido.id)}
-                      style={{ backgroundColor: '#28a745', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}
-                    >
-                      Listo ✓
-                    </button>
-                  </div>
-                ))
-              )}
-            </div>
-          ) : (
-            <div style={{ maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <h3>🍔 List / Formulario de Modificación de Menú</h3>
-              {menu.map(producto => (
-                <div key={producto.id} style={{ border: '1px solid #ddd', padding: '20px', borderRadius: '8px', backgroundColor: '#fff', display: 'flex', flexDirection: 'column', gap: '10px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                  
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <label style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '4px' }}>Nombre:</label>
-                    <input 
-                      type="text" 
-                      value={producto.nombre} 
-                      onChange={(e) => actualizarItemMenu(producto.id, 'nombre', e.target.value)}
-                      style={{ padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
-                    />
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <label style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '4px' }}>Precio (S/):</label>
-                    <input 
-                      type="number" 
-                      step="0.10"
-                      value={producto.precio} 
-                      onChange={(e) => actualizarItemMenu(producto.id, 'precio', parseFloat(e.target.value) || 0)}
-                      style={{ padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
-                    />
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <label style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '4px' }}>Descripción:</label>
-                    <textarea 
-                      value={producto.descripcion} 
-                      onChange={(e) => actualizarItemMenu(producto.id, 'descripcion', e.target.value)}
-                      style={{ padding: '8px', border: '1px solid #ccc', borderRadius: '4px', minHeight: '60px', resize: 'vertical' }}
-                    />
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <label style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '4px' }}>Ruta de la Imagen:</label>
-                    <input 
-                      type="text" 
-                      value={producto.imagen || ''} 
-                      onChange={(e) => actualizarItemMenu(producto.id, 'imagen', e.target.value)}
-                      style={{ padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
-                    />
-                  </div>
-
-                </div>
-              ))}
-            </div>
-          )}
-        </main>
+        <AdminPanel pedidos={pedidos} setPedidos={setPedidos} menu={menu} setMenu={setMenu} />
       ) : (
         /* ================= VISTA CLIENTE TIENDA ================= */
         <>
