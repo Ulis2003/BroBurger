@@ -110,15 +110,15 @@ const totalPagar = carrito.reduce(
                     <h4>Datos de Pago</h4>
                     <div className="form-container">
                         <label>Numero de tarjeta: </label>
-                        <input name="NumeroTarjeta" type='text' required/>
+                        <input name="NumeroTarjeta" type='text' />
                     </div>
                     <div className="form-container">
                         <label>Fecha de Vencimiento: </label>
-                        <input name="FechaVencimiento" type='month' required/>
+                        <input name="FechaVencimiento" type='month' />
                     </div>
                     <div className="form-container">
                         <label>CVV: </label>
-                        <input name="CCV" type='text' required />
+                        <input name="CCV" type='text'  />
                     </div>
                     
 

@@ -4,6 +4,7 @@ import MiscelaneaFooter from './MiscelaneaFooter';
 import Pago from './Pago';
 import Seguimiento from './Seguimiento';
 import AdminPanel from './AdminPanel';
+import Login from './Login';
 
 const INITIAL_MENU = [
   {
@@ -131,6 +132,7 @@ function App() {
 
   // Estados exclusivos del Panel de Administración
   const [esAdmin, setEsAdmin] = useState(false);
+  const [isLoginView, setIsLoginView] = useState(false);
   const [vistaAdmin, setVistaAdmin] = useState('pedidos'); // 'pedidos' o 'menu'
   const [pedidos, setPedidos] = useState([
     { id: 1, cliente: "Cliente #241", orden: "1x Mega Bacon Bro, 1x Bro Clásica", total: 19.50, estado: "En Preparacion"
@@ -225,6 +227,18 @@ function App() {
     ? menu
     : menu.filter(producto => producto.categoria === categoriaSeleccionada);
 
+  if (isLoginView) {
+    return (
+      <Login
+        onLoginSuccess={() => {
+          setEsAdmin(true);
+          setIsLoginView(false);
+        }}
+        onCancel={() => setIsLoginView(false)}
+      />
+    );
+  }
+
   if (pantalla === "Pago") {
     return <Pago carrito={carrito} volverMenu={() => setPantalla("App")} onConfirmarPedido={gestionarConfirmacionCompra} />;
   }
@@ -247,7 +261,13 @@ function App() {
           <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
             {/* Botón Switch de Vista Admin / Cliente */}
             <button 
-              onClick={() => setEsAdmin(!esAdmin)}
+              onClick={() => {
+                if (esAdmin) {
+                  setEsAdmin(false);
+                } else {
+                  setIsLoginView(true);
+                }
+              }}
               style={{
                 backgroundColor: esAdmin ? '#007bff' : '#d32f2f',
                 color: 'white',
